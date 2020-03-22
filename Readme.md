@@ -16,9 +16,9 @@ Ex : sell a physical book version and propose the same in e-book.
 - This field allows you to search for a product to link and link it to the current one. 
 - In the front product page, a button appears with one of theses Labels :
 
--- "Virtual version" : if the original product is physical and the linked is virtual
--- "Physical version" : if the inverse
--- "Other version" : if both are physical or virtual
+- "Virtual version" : if the original product is physical and the linked is virtual
+- "Physical version" : if the inverse
+- "Other version" : if both are physical or virtual
 
 - User click on this button to access the other version and can return to the previous one if you have linked the both products together (eg : book linked to e-book and e-book linked to book) 
 
@@ -41,6 +41,6 @@ Ex : sell a physical book version and propose the same in e-book.
 
 - To provide futurs improvements you can donate there :
 
---- Bitcoins 
---- Ethereum
---- Paypal
+- Bitcoins 
+- Ethereum
+- Paypal
