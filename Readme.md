@@ -41,6 +41,6 @@ Ex : sell a physical book version and propose the same in e-book.
 
 - To provide futurs improvements you can donate there :
 
-- Bitcoins 
-- Ethereum
-- Paypal
+- Bitcoins : bc1qxjurxtkwf2hwllzw7q7s39sv3ex6sh98yh5f0s
+- Ethereum : 0xFd312E080720adb2A22b582b9463f6906e4C73dC
+- Paypal : inc.
