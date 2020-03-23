@@ -1,4 +1,5 @@
 <?php
+
 /**
  * 2007-2020 PrestaShop
  *
@@ -42,6 +43,7 @@ class Simplelinkedproducts extends Module
         $this->tab = 'administration';
         $this->version = '1.0.0';
         $this->author = 'Pierre Viéville';
+        $this->module_key = "0329030f432efdedeb57965fab33c6eb";
         $this->need_instance = 0;
 
         /**
