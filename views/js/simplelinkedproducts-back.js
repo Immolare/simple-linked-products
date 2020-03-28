@@ -112,7 +112,7 @@ var waitForJQuery = setInterval(function () {
 
                 var html = '<li class="media"><div class="media-left"><img class="media-object image" src="' + suggestion.image + '" /></div>';
                 html += '<div class="media-body media-middle">' + tplcollectionHtml + '</div>';
-                html += '<input type="hidden" name="' + autocompleteObject.attr('data-fullname') + '" value="' + value + '" /></li>';
+                html += '<input type="hidden" name="' + autocompleteObject.attr('data-fullname') + '" value="' + parseInt(value) + '" /></li>';
 
                 $('#' + autocompleteFormId + '-data').append(html);
 

@@ -29,13 +29,16 @@ if (!defined('_PS_VERSION_')) {
     exit;
 }
 
+include_once __DIR__ . '/classes/SimpleLinkedProductsClass.php';
+
 class Simplelinkedproducts extends Module
 {
     protected $config_form = false;
 
-    const SIMPLE_PRODUCT_FORM_FIELD = "simple_linked_product";
-    const SIMPLE_PRODUCT_FORM_SEARCH_MAPPING_VALUE = "id";
-    const SIMPLE_PRODUCT_FORM_SEARCH_MAPPING_NAME = "name";
+    const SIMPLE_LINKED_PRODUCT_FORM_FIELD = "id_product_linked";
+    const SIMPLE_LINKED_PRODUCT_FORM_ID = "simple_linked_product";
+    const SIMPLE_LINKED_PRODUCT_FORM_SEARCH_MAPPING_VALUE = "id";
+    const SIMPLE_LINKED_PRODUCT_FORM_SEARCH_MAPPING_NAME = "name";
 
     public function __construct()
     {
@@ -71,13 +74,12 @@ class Simplelinkedproducts extends Module
             $this->installSql() &&
             $this->registerHook('displayBackOfficeHeader') &&
             $this->registerHook('displayProductButtons') &&
-            $this->registerHook('displayAdminProductsExtra');
+            $this->registerHook('displayAdminProductsExtra') &&
+            $this->registerHook('actionProductUpdate');
     }
 
     public function uninstall()
     {
-        Configuration::deleteByName('SIMPLELINKEDPRODUCTS_LIVE_MODE');
-
         return parent::uninstall() && $this->unInstallSql();
     }
 
@@ -87,11 +89,7 @@ class Simplelinkedproducts extends Module
      */
     protected function installSql()
     {
-        $sqlInstall = "ALTER TABLE " . _DB_PREFIX_ . "product ADD simple_linked_product VARCHAR(255) NULL";
-
-        $returnSql = Db::getInstance()->execute($sqlInstall);
-
-        return $returnSql;
+        return SimpleLinkedProductsClass::install();
     }
 
     /**
@@ -100,11 +98,7 @@ class Simplelinkedproducts extends Module
      */
     protected function unInstallSql()
     {
-        $sqlInstall = "ALTER TABLE " . _DB_PREFIX_ . "product DROP simple_linked_product";
-
-        $returnSql = Db::getInstance()->execute($sqlInstall);
-
-        return $returnSql;
+        return SimpleLinkedProductsClass::unInstall();
     }
 
     /**
@@ -144,22 +138,21 @@ class Simplelinkedproducts extends Module
     /**
      * Retrieve or not a linked product from the current product
      */
-    protected function getTheLinkedProduct($product)
+    protected function formatTheLinkedProduct($simpleLinkedProductObj = null)
     {
-        $language = $this->context->language->id;
+        $product = null;
 
-        if (is_null($product->simple_linked_product) || empty($product->simple_linked_product)) {
-            return null;
-        } else {
-            $linkedProduct = new Product((int) $product->simple_linked_product);
-            $linkedProduct->image_link_small = '//' . (new Link())->getImageLink(
-                $linkedProduct->link_rewrite[$language],
-                Image::getCover((int) $linkedProduct->id)['id_image'],
+        if ($simpleLinkedProductObj->id) {
+            $language = $this->context->language->id;
+            $product = new Product((int) $simpleLinkedProductObj->id_product_linked);
+            $product->image_link_small = '//' . (new Link())->getImageLink(
+                $product->link_rewrite[$language],
+                Image::getCover((int) $product->id)['id_image'],
                 ImageType::getFormatedName("small")
             );
         }
 
-        return $linkedProduct;
+        return $product;
     }
 
     /**
@@ -169,10 +162,12 @@ class Simplelinkedproducts extends Module
     {
         $smartyAssign = [];
         $smartyAssign['linkedProduct'] = null;
-        $product = new Product((int) $params['product']['id_product']);
-        $linkedProduct = $this->getTheLinkedProduct($product);
+        $product = $params['product'];
 
-        if (!empty($linkedProduct)) {
+        $simpleLinkedProductObj = SimpleLinkedProductsClass::findByIdProduct((int) $product->id);
+        $linkedProduct = $this->formatTheLinkedProduct($simpleLinkedProductObj);
+
+        if (!is_null($linkedProduct)) {
             $linkedProductLink = $this->context->link->getProductLink((int) $linkedProduct->id);
 
             if (!$product->is_virtual && $linkedProduct->is_virtual) {
@@ -202,20 +197,21 @@ class Simplelinkedproducts extends Module
      */
     public function hookDisplayAdminProductsExtra($params)
     {
-        $product = new Product((int) $params['id_product']);
-        $linkedProduct = $this->getTheLinkedProduct($product);
+        $simpleLinkedProductObj = SimpleLinkedProductsClass::findByIdProduct((int) $params['id_product']);
+        $linkedProduct = $this->formatTheLinkedProduct($simpleLinkedProductObj);
+
         $remoteUrl = $this->buildAjaxRemoteUrl();
         $title = $this->l('Link a product');
         $placeholder = $this->l('Select and add a linked product');
         $helpblock = $this->l('Don\'t forget to press "Save"');
 
         $this->context->smarty->assign([
-            'formid' => self::SIMPLE_PRODUCT_FORM_FIELD,
-            'fullname' => self::SIMPLE_PRODUCT_FORM_FIELD,
+            'formid' => self::SIMPLE_LINKED_PRODUCT_FORM_ID,
+            'fullname' => self::SIMPLE_LINKED_PRODUCT_FORM_FIELD,
             'linkedProduct' => $linkedProduct,
             'remote_url' => $remoteUrl,
-            'mapping_name' => self::SIMPLE_PRODUCT_FORM_SEARCH_MAPPING_NAME,
-            'mapping_value' => self::SIMPLE_PRODUCT_FORM_SEARCH_MAPPING_VALUE,
+            'mapping_name' => self::SIMPLE_LINKED_PRODUCT_FORM_SEARCH_MAPPING_NAME,
+            'mapping_value' => self::SIMPLE_LINKED_PRODUCT_FORM_SEARCH_MAPPING_VALUE,
             'limit' => 1, // we allow only one linked item
             'title' => $title,
             'placeholder' => $placeholder,
@@ -223,5 +219,18 @@ class Simplelinkedproducts extends Module
         ]);
 
         return $this->display(__FILE__, 'views/templates/admin/products_extra.tpl');
+    }
+
+    /**
+     * Add or update the table depends of product and productLinked values
+     */
+    public function hookActionProductUpdate($params)
+    {
+        $id_product = (int) Tools::getValue('id_product');
+        $simpleLinkedProductObj = SimpleLinkedProductsClass::findByIdProduct($id_product);
+        $simpleLinkedProductObj->id_product = $id_product;
+        $simpleLinkedProductObj->id_product_linked = (int) Tools::getValue(self::SIMPLE_LINKED_PRODUCT_FORM_FIELD);
+
+        $simpleLinkedProductObj->saveProduct();
     }
 }

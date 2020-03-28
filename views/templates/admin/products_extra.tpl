@@ -44,12 +44,11 @@
                 >
                 <div class="search search-with-icon">
                     <input type="text" id="{$formid}" class="form-control search typeahead {$formid}" placeholder="{$placeholder}" autocomplete="off">
-                    <input type="hidden" name="{$fullname}" />
                 </div>
                 <small class="form-text text-muted text-right typeahead-hint"></small>
 
                 <ul id="{$formid}-data" class="typeahead-list nostyle col-sm-12 product-list">
-                    {if $linkedProduct && $linkedProduct != ''}
+                    {if !is_null($linkedProduct->id)}
                     <li class="media">
                     <div class="media-left">
                         <img class="media-object image" src="{$linkedProduct->image_link_small}" />
