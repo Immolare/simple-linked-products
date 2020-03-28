@@ -1,5 +1,4 @@
 <?php
-
 /**
  * 2007-2020 PrestaShop
  *
@@ -24,6 +23,7 @@
  *  @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
  *  https://www.pierrevieville.fr
  */
+
 class SimpleLinkedProductsClass extends ObjectModel
 {
     const SIMPLE_LINKED_PRODUCT_TABLE = "simple_linked_products";
