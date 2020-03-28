@@ -29,7 +29,7 @@ if (!defined('_PS_VERSION_')) {
     exit;
 }
 
-include_once __DIR__ . '/classes/SimpleLinkedProductsClass.php';
+include_once dirname(__FILE__) . '/classes/SimpleLinkedProductsClass.php';
 
 class Simplelinkedproducts extends Module
 {
