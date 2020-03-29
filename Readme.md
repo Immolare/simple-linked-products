@@ -11,7 +11,7 @@ Ex : sell a physical book version and propose the same in e-book.
 
 ## How it works
 
-- Simple Linked Products add a field into the Prestashop's product table in DB.
+- Simple Linked Products add a relation table into the Prestashop's DB, with 3 fields : id, id_product, id_product_linked.
 - In the back office > product edit page > modules tabs, a search field is displayed.
 - This field allows you to search for a product to link and link it to the current one. 
 - In the front product page, a button appears with one of theses Labels :
