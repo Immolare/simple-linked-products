@@ -30,7 +30,7 @@ class Simplelinkedproducts extends Module
     {
         $this->name = 'simplelinkedproducts';
         $this->tab = 'administration';
-        $this->version = '1.0.0';
+        $this->version = '1.0.1';
         $this->author = 'Pierre Viéville';
         $this->module_key = "0329030f432efdedeb57965fab33c6eb";
         $this->need_instance = 0;

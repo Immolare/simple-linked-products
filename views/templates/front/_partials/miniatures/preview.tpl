@@ -15,7 +15,7 @@
             <a href="{$product.url}">
               <img
                 src="{$product.cover.bySize.home_default.url}"
-                alt="{if !empty($product.cover.legend)}{$product.cover.legend}{else}{$product.name|truncate:30:'...'}{/if}"
+                alt="{if !empty($product.cover.legend)}{$product.cover.legend}{else}{$product.name}{/if}"
                 data-full-size-image-url="{$product.cover.large.url}"
               />
             </a>
@@ -27,7 +27,7 @@
       </div>
       <div class="col-md-6">
         <p class="slp-version">{$linkedProductButtonSubLabel}</p>
-        <h4 class="h4 slp-product-title"><a href="{$product.url}">{$product.name|truncate:30:'...'}</a></h4>
+        <h4 class="h4 slp-product-title"><a href="{$product.url}">{$product.name}</a></h4>
         <div class="product-prices {if $product->has_discount}has-discount{/if}">
             {if $product.has_discount}
               <div class="product-discount">
@@ -52,7 +52,7 @@
               <p class="product-unit-price sub">{l s='(%unit_price%)' d='Shop.Theme.Catalog' sprintf=['%unit_price%' => $product.unit_price_full]}</p>
             {/if}
         </div>
-        <div id="product-description-short-{$product.id}">{$product.description_short nofilter}</div>
+        <div id="product-description-short-{$product.id}">{$product.description_short}</div>
         <hr/>
         <a class="quick-view btn btn-secondary btn-sm btn-block" href="#" data-link-action="quickview">
           <i class="material-icons search">&#xE8B6;</i> {l s='Quick view' d='Shop.Theme.Actions'}
