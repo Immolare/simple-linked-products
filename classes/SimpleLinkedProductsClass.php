@@ -1,4 +1,5 @@
 <?php
+
 /**
  * 2007-2020 PrestaShop
  *
@@ -23,7 +24,6 @@
  *  @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
  *  https://www.pierrevieville.fr
  */
-
 class SimpleLinkedProductsClass extends ObjectModel
 {
     const SIMPLE_LINKED_PRODUCT_TABLE = "simple_linked_products";
@@ -90,6 +90,16 @@ class SimpleLinkedProductsClass extends ObjectModel
         $obj->id_product_linked = $row['id_product_linked'] ?? null;
 
         return $obj;
+    }
+
+    public static function findProduct(int $id_product)
+    {
+        $query = new DbQuery();
+        $query->select('p.*');
+        $query->from('product', 'p');
+        $query->where('p.id_product = ' . (int) $id_product);
+
+        return Db::getInstance()->getRow($query);
     }
 
     public function addProduct()

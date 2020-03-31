@@ -1,4 +1,5 @@
 <?php
+
 /**
  * 2007-2020 PrestaShop
  *
@@ -28,7 +29,15 @@ if (!defined('_PS_VERSION_')) {
     exit;
 }
 
-include_once dirname(__FILE__) . '/classes/SimpleLinkedProductsClass.php';
+use PrestaShop\PrestaShop\Core\Product\ProductListingPresenter;
+use PrestaShop\PrestaShop\Adapter\Image\ImageRetriever;
+use PrestaShop\PrestaShop\Adapter\Presenter\Product\ProductPresenter;
+use PrestaShop\PrestaShop\Adapter\Product\PriceFormatter;
+use PrestaShop\PrestaShop\Adapter\Product\ProductColorsRetriever;
+use PrestaShop\PrestaShop\Core\Product\ProductPresenter as ProductProductPresenter;
+
+include_once __DIR__ . '/classes/SimpleLinkedProductsClass.php';
+
 
 class Simplelinkedproducts extends Module
 {
@@ -72,8 +81,9 @@ class Simplelinkedproducts extends Module
         return parent::install() &&
             $this->installSql() &&
             $this->registerHook('displayBackOfficeHeader') &&
-            $this->registerHook('displayProductButtons') &&
             $this->registerHook('displayAdminProductsExtra') &&
+            $this->registerHook('header') &&
+            $this->registerHook('displayProductActions') &&
             $this->registerHook('actionProductUpdate');
     }
 
@@ -118,6 +128,23 @@ class Simplelinkedproducts extends Module
     }
 
     /**
+     * Add the CSS & JavaScript files you want to be loaded in the BO.
+     */
+    public function hookHeader($params)
+    {
+        // Only on product page
+        if ('product' === $this->context->controller->php_self) {
+            $this->context->controller->addCSS(
+                $this->_path . '/views/css/' . $this->name . '-front.css'
+            );
+
+            $this->context->controller->addJS(
+                $this->_path . '/views/js/' . $this->name . '-front.js'
+            );
+        }
+    }
+
+    /**
      * Build the Ajax remote url for querying productsLists and search a product easyly inside
      */
     protected function buildAjaxRemoteUrl()
@@ -155,35 +182,60 @@ class Simplelinkedproducts extends Module
     }
 
     /**
+     * Retrieve the product presentation for front template
+     */
+    protected function getProduct(int $id_product)
+    {
+        $rawProduct = SimpleLinkedProductsClass::findProduct($id_product);
+        $assembler = new ProductAssembler($this->context);
+
+        $presenterFactory = new ProductPresenterFactory($this->context);
+        $presentationSettings = $presenterFactory->getPresentationSettings();
+        $presenter = new ProductPresenter(
+            new ImageRetriever(
+                $this->context->link
+            ),
+            $this->context->link,
+            new PriceFormatter(),
+            new ProductColorsRetriever(),
+            $this->context->getTranslator()
+        );
+
+        return $presenter->present(
+            $presentationSettings,
+            $assembler->assembleProduct($rawProduct),
+            $this->context->language
+        );
+    }
+
+    /**
      * Add in the Product page front, a button to a linked product if exists
      */
-    public function hookDisplayProductButtons($params)
+    public function hookDisplayProductActions($params)
     {
         $smartyAssign = [];
         $smartyAssign['linkedProduct'] = null;
         $product = $params['product'];
 
         $simpleLinkedProductObj = SimpleLinkedProductsClass::findByIdProduct((int) $product->id);
-        $linkedProduct = $this->formatTheLinkedProduct($simpleLinkedProductObj);
 
-        if (!is_null($linkedProduct)) {
-            $linkedProductLink = $this->context->link->getProductLink((int) $linkedProduct->id);
+        if (!is_null($simpleLinkedProductObj->id) && !empty($simpleLinkedProductObj->id_product_linked)) {
+            $linkedProduct = $this->getProduct((int) $simpleLinkedProductObj->id_product_linked);
 
-            if (!$product->is_virtual && $linkedProduct->is_virtual) {
+            if (!$product->is_virtual && $linkedProduct['is_virtual']) {
                 // Link a physical product to a virtual product
-                $linkedProductButtonLabel = $this->l('Virtual version');
-            } elseif ($product->is_virtual && !$linkedProduct->is_virtual) {
+                $linkedProductButtonSubLabel = $this->l('Virtual version');
+            } elseif ($product->is_virtual && !$linkedProduct['is_virtual']) {
                 // Link a virtual product to a physical product
-                $linkedProductButtonLabel = $this->l('Physical version');
+                $linkedProductButtonSubLabel = $this->l('Physical version');
             } else {
                 // Link a virtual product to a virtual product OR
                 // Link a physical product to a physical product
-                $linkedProductButtonLabel = $this->l('Other version');
+                $linkedProductButtonSubLabel = $this->l('Other version');
             }
 
             $smartyAssign['linkedProduct'] = $linkedProduct;
-            $smartyAssign['linkedProductLink'] = $linkedProductLink;
-            $smartyAssign['linkedProductButtonLabel'] = $linkedProductButtonLabel;
+            $smartyAssign['linkedProductButtonSubLabel'] = $linkedProductButtonSubLabel;
         }
 
         $this->context->smarty->assign($smartyAssign);

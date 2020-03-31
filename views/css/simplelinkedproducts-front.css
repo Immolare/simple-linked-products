@@ -25,3 +25,21 @@
 * Don't forget to prefix your containers with your own identifier
 * to avoid any conflicts with others containers.
 */
+.slp-miniature {
+  background-color: white;
+  padding: 15px 0;
+}
+.slp-version {
+  text-align: center;
+  text-transform: uppercase;
+  margin-bottom: 0;
+  font-size: 80%;
+}
+.slp-miniature .product-prices {
+  display:flex;
+  align-items: center;
+	margin-bottom: 1.25rem;
+}
+.slp-miniature .product-prices div {
+  margin: 0;
+}

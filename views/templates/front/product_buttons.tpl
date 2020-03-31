@@ -22,16 +22,10 @@
 *  @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
 *  https://www.pierrevieville.fr
 *}
-
 {block name='simple_product_linked'}
-{if $linkedProduct && $linkedProduct !="" && $linkedProductLink && $linkedProductLink != ""}
+{if $linkedProduct}
 <hr/>
-<div class="simple-product-linked-change-version clearfix">
-    <a class="btn btn-primary" href="{$linkedProductLink}">
-        <i class="material-icons">loop</i>
-        {$linkedProductButtonLabel}
-    </a>
-</div>
+{include file='./_partials/miniatures/preview.tpl' product=$linkedProduct}
 <hr/>
 {/if}
 {/block}
