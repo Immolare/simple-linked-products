@@ -1,5 +1,4 @@
 <?php
-
 /**
  *  @author    Pierre Viéville <contact@pierrevieville.fr>
  *  @copyright 2020 - Pierre Viéville
