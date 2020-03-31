@@ -16,8 +16,7 @@ use PrestaShop\PrestaShop\Adapter\Presenter\Product\ProductPresenter;
 use PrestaShop\PrestaShop\Adapter\Product\PriceFormatter;
 use PrestaShop\PrestaShop\Adapter\Product\ProductColorsRetriever;
 
-include_once filename(__FILE__) . '/classes/SimpleLinkedProductsClass.php';
-
+include_once dirname(__FILE__) . '/classes/SimpleLinkedProductsClass.php';
 
 class Simplelinkedproducts extends Module
 {
