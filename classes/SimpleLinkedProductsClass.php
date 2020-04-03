@@ -44,7 +44,7 @@ class SimpleLinkedProductsClass extends ObjectModel
             PRIMARY KEY (id),
             INDEX simple_linked_products_id_product (id_product),
             FOREIGN KEY (id_product)
-            REFERENCES " . _DB_PREFIX_ . "product(id)
+            REFERENCES " . _DB_PREFIX_ . "product(id_product)
             ON DELETE CASCADE
         )";
 
