@@ -6,8 +6,10 @@
 *}
 {block name='simple_product_linked'}
 {if $linkedProduct}
+<div class="simple-linked-product-container">  
 <hr/>
 {include file='./_partials/miniatures/preview.tpl' product=$linkedProduct}
 <hr/>
+</div>
 {/if}
 {/block}
