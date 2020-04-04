@@ -52,7 +52,7 @@
               <p class="product-unit-price sub">{l s='(%unit_price%)' d='Shop.Theme.Catalog' sprintf=['%unit_price%' => $product.unit_price_full]}</p>
             {/if}
         </div>
-        <div id="product-description-short-{$product.id}">{$product.description_short}</div>
+        <div class="slp-product-description" id="product-description-short-{$product.id}">{$product.description_short nofilter}</div>
         <hr/>
         <a class="quick-view btn btn-secondary btn-sm btn-block" href="#" data-link-action="quickview">
           <i class="material-icons search">&#xE8B6;</i> {l s='Quick view' d='Shop.Theme.Actions'}

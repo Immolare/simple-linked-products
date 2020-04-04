@@ -9,10 +9,13 @@
   padding: 15px 0;
 }
 .slp-version {
-  text-align: center;
+  text-align: left;
   text-transform: uppercase;
   margin-bottom: 0;
   font-size: 80%;
+}
+.slp-product-title {
+  text-align: left;
 }
 .slp-miniature .product-prices {
   display:flex;
@@ -21,4 +24,16 @@
 }
 .slp-miniature .product-prices div {
   margin: 0;
+}
+.slp-miniature img {
+  max-width: 100%;
+}
+
+.slp-miniature .slp-product-description {
+  max-height: 100px;
+  overflow: auto;
+}
+.modal .slp-miniature .slp-product-description {
+  max-height: 100px;
+  overflow: auto;
 }
